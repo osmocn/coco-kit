@@ -4,6 +4,7 @@
   "packageManager": "pnpm@10.25.0",
   "scripts": {
     "dev": "turbo dev",
+    "dev:docs": "pnpm --filter @coco-kit/docs dev",
     "dev:web": "pnpm --filter @coco-kit/web dev",
     "build": "turbo build",
     "lint": "biome check .",

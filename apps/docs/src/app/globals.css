@@ -1,0 +1,75 @@
+@import "tailwindcss";
+
+:root {
+  color-scheme: light;
+  --background: #eef3f7;
+  --foreground: #101b29;
+  --surface: rgba(255, 255, 255, 0.82);
+  --surface-strong: #fdfefe;
+  --surface-dark: #0f1a29;
+  --muted: #5b6879;
+  --line: rgba(16, 27, 41, 0.08);
+  --line-strong: rgba(16, 27, 41, 0.16);
+  --accent: #0a7d72;
+  --accent-strong: #09584f;
+  --accent-soft: rgba(10, 125, 114, 0.13);
+  --spark: #eebc4b;
+  --shadow: 0 28px 70px rgba(18, 31, 45, 0.13);
+}
+
+@theme inline {
+  --color-canvas: var(--background);
+  --color-ink: var(--foreground);
+  --color-surface: var(--surface);
+  --color-surface-strong: var(--surface-strong);
+  --color-surface-dark: var(--surface-dark);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-strong);
+  --color-accent-soft: var(--accent-soft);
+  --color-spark: var(--spark);
+  --font-sans: "Aptos", "Segoe UI Variable", "Segoe UI", sans-serif;
+  --font-display: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", serif;
+  --font-mono:
+    "Cascadia Code", "Aptos Mono", "SFMono-Regular", "Consolas", monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background:
+    radial-gradient(
+      circle at top left,
+      rgba(10, 125, 114, 0.18),
+      transparent 34%
+    ),
+    radial-gradient(
+      circle at top right,
+      rgba(238, 188, 75, 0.18),
+      transparent 26%
+    ), linear-gradient(180deg, #f6fafc 0%, #eef3f7 45%, #e8eef3 100%);
+}
+
+body {
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.5) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.5) 1px, transparent 1px),
+    transparent;
+  background-size: 34px 34px;
+  color: var(--foreground);
+  min-height: 100vh;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+::selection {
+  background: var(--accent-soft);
+  color: var(--foreground);
+}

@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "@coco-kit/ui/globals.css";
 
 :root {
   color-scheme: light;

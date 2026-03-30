@@ -16,8 +16,7 @@ app
     return c.json(
       {
         error: "Internal Server Error",
-        message:
-          env.NODE_ENV === "development" ? err.message : undefined,
+        message: env.NODE_ENV === "development" ? err.message : undefined,
       },
       500,
     );

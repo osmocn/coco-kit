@@ -14,6 +14,13 @@ if (trustedOrigins.length === 0) {
 }
 
 export const auth = betterAuth({
+  advanced: {
+    database: {
+      generateId: () => {
+        return crypto.randomUUID();
+      },
+    },
+  },
   plugins: [organization(), openAPI()],
   basePath: "/api/auth",
   baseURL: getEnvVariable("BETTER_AUTH_BASE_URL"),

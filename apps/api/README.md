@@ -13,7 +13,8 @@ pnpm --filter @coco-kit/api build
 pnpm --filter @coco-kit/api start
 ```
 
-The development server listens on `http://localhost:3002`.
+The development server listens on `http://localhost:3060`.
 
 `build` emits the compiled server into `dist/`, and `start` runs the compiled
-entrypoint with Node.js.
+entrypoint through `tsx` so workspace TypeScript packages still resolve
+correctly.

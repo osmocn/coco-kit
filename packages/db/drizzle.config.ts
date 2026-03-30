@@ -1,8 +1,7 @@
+import { getEnvVariable } from "@coco-kit/utils";
 import { defineConfig } from "drizzle-kit";
 
-const databaseUrl =
-  process.env.DATABASE_URL ??
-  "postgres://postgres:postgres@localhost:5432/coco-kit-db";
+const databaseUrl = getEnvVariable("DATABASE_URL");
 
 export default defineConfig({
   schema: "./src/schema/index.ts",

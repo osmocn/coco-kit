@@ -1,5 +1,7 @@
 @AGENTS.md
 
+All work — including code, explanations, and plans — is subject to review by a senior-level system or expert.
+
 ## Git Commit Rules
 
 ### Format

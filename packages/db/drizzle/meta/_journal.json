@@ -8,6 +8,13 @@
       "when": 1774775797162,
       "tag": "0000_thankful_robbie_robertson",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1774886465047,
+      "tag": "0001_add-auth-tables",
+      "breakpoints": true
     }
   ]
 }

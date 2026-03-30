@@ -1,18 +1,9 @@
+import "./lib/env";
 import { serve } from "@hono/node-server";
-import { Hono } from "hono";
+import app from "./app";
 
-const app = new Hono();
+const port = 3060;
 
-app.get("/", (c) => {
-  return c.text("Hello Hono!");
+serve({ fetch: app.fetch, port }, () => {
+  console.log(`Grove API running on http://localhost:${port}`);
 });
-
-serve(
-  {
-    fetch: app.fetch,
-    port: 3002,
-  },
-  (info) => {
-    console.log(`Server is running on http://localhost:${info.port}`);
-  },
-);

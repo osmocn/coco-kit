@@ -39,9 +39,7 @@ const envSchema = z
 
 const parsed = envSchema.safeParse({
   ...process.env,
-  BETTER_AUTH_TRUSTED_ORIGINS:
-    process.env.BETTER_AUTH_TRUSTED_ORIGINS ??
-    process.env.BETTER_AUTH_TRUSTED_ORIGIN,
+  BETTER_AUTH_TRUSTED_ORIGINS: process.env.BETTER_AUTH_TRUSTED_ORIGINS,
 });
 
 if (!parsed.success) {
@@ -56,7 +54,6 @@ if (!parsed.success) {
   console.error("\nFix your .env file and restart.\n");
   process.exit(1);
 }
-
 export const env = parsed.data;
 
 export type Env = typeof env;

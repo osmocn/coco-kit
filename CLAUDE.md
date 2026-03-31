@@ -59,8 +59,8 @@ Multiple changes (use bullet body):
 ```
 refactor(auth): remove better-auth from web, add Hono session API
 
-- Rename apps/web package from "grove" to "@grove/web"
-- Remove better-auth dep from apps/web and @grove/zod-schemas
+- Rename apps/web package from "coco-kit" to "@coco-kit/web"
+- Remove better-auth dep from apps/web and @coco-kit/zod
 - Replace authClient with React Query useSession hook (GET /auth/session)
 - Add GET /auth/session and POST /auth/sign-out to apps/api
 - Migrate auth-logout and avatar-upload off authClient to Hono client

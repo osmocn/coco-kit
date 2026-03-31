@@ -11,8 +11,12 @@
     "build": "turbo build",
     "lint": "biome check .",
     "typecheck": "turbo typecheck",
+    "db:generate": "pnpm --filter @coco-kit/db db:generate",
+    "db:migrate": "pnpm --filter @coco-kit/db db:migrate",
+    "db:studio": "pnpm --filter @coco-kit/db db:studio",
     "check": "pnpm lint && pnpm typecheck",
-    "format": "biome format --write ."
+    "format": "biome format --write .",
+    "clean": "node scripts/clean.mjs"
   },
   "devDependencies": {
     "@biomejs/biome": "2.2.0",

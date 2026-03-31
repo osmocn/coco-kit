@@ -3,6 +3,7 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 import { env } from "./lib/env";
+import { routes as allRoutes } from "./routes";
 
 const app = new Hono<{
   Variables: {
@@ -26,6 +27,10 @@ app.use(
 app.use("*", logger());
 
 app.use("*", async (c, next) => {
+  if (c.req.url === `${env.BETTER_AUTH_BASE_URL}/api/test-email`) {
+    return next()
+  }
+
   const session = await auth.api.getSession({
     headers: c.req.raw.headers,
   });
@@ -43,6 +48,7 @@ app.use("*", async (c, next) => {
 });
 
 const routes = app
+  .route("/api", allRoutes)
   .get("/", (c) => c.text("Hello Hono!"))
   .on(["POST", "GET"], "/api/auth/*", (c) => {
     return auth.handler(c.req.raw);

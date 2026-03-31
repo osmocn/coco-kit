@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@coco-kit/auth": "workspace:*",
+    "@coco-kit/email": "workspace:*",
     "@hono/node-server": "^1.19.11",
     "hono": "^4.12.9",
     "zod": "^4.3.6"

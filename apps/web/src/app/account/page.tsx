@@ -2,6 +2,7 @@ import { Button } from "@coco-kit/ui/components/ui/button";
 import { headers } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { SignOutButton } from "@/components/sign-out-button";
 import { getAuthSession } from "@/lib/auth-session";
 
 function formatTimestamp(value: string) {
@@ -101,6 +102,7 @@ export default async function AccountPage() {
               <Button asChild>
                 <Link href="/">Go To Home</Link>
               </Button>
+              <SignOutButton />
             </div>
           </aside>
         </section>

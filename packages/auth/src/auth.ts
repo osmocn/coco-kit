@@ -1,8 +1,9 @@
 import db, { authSchema } from "@coco-kit/db";
+import { email } from "@coco-kit/email";
 import { getEnvVariable } from "@coco-kit/utils";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { openAPI, organization } from "better-auth/plugins";
+import { openAPI, organization, magicLink } from "better-auth/plugins";
 
 const trustedOrigins = getEnvVariable("BETTER_AUTH_TRUSTED_ORIGINS")
   .split(",")
@@ -21,7 +22,16 @@ export const auth = betterAuth({
       },
     },
   },
-  plugins: [organization(), openAPI()],
+  plugins: [
+    organization(),
+    openAPI(),
+    magicLink({
+      // emails
+      sendMagicLink: async ({ email: to, url }) => {
+        await email.sendMagicLink(to, { url });
+      },
+    }),
+  ],
   basePath: "/api/auth",
   baseURL: getEnvVariable("BETTER_AUTH_BASE_URL"),
   secret: getEnvVariable("BETTER_AUTH_SECRET"),
@@ -38,7 +48,42 @@ export const auth = betterAuth({
       organization: authSchema.organization,
     },
   }),
+  user: {
+    changeEmail: {
+      enabled: true,
+
+      // emails
+      sendChangeEmailConfirmation: async ({ user, url, newEmail }) => {
+        await email.sendEmailChange(user.email, {
+          name: user.name,
+          newEmail,
+          url,
+        });
+      },
+    },
+  },
   emailAndPassword: {
     enabled: true,
+    requireEmailVerification: false,
+
+    // emails
+    sendResetPassword: async ({ url, user }) => {
+      await email.sendPasswordReset(user.email, { name: user.name, url });
+    },
+    onPasswordReset: async ({ user }) => {
+      await email.sendPasswordResetSuccess(user.email, { name: user.name });
+    },
+  },
+  emailVerification: {
+    autoSignInAfterVerification: true,
+    sendOnSignUp: true,
+
+    // emails
+    sendVerificationEmail: async ({ url, user }) => {
+      await email.sendVerifyEmail(user.email, { name: user.name, url });
+    },
+    afterEmailVerification: async ({ name, email: userEmail }) => {
+      await email.sendEmailVerified(userEmail, { name, email: userEmail });
+    },
   },
 });

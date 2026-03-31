@@ -29,4 +29,5 @@ export async function getAuthSession(
   const parsedSession = authSessionResponseSchema.safeParse(payload);
 
   return parsedSession.success ? parsedSession.data : null;
+
 }

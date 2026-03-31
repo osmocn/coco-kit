@@ -20,8 +20,7 @@ export const userSchema = z.object({
 
 // ─── Session ─────────────────────────────────────────────────────────────────
 
-// biome-ignore lint/correctness/noUnusedVariables: <->
-const sessionSchema = z.object({
+export const sessionSchema = z.object({
   ...idSchema(),
   expiresAt: manualTimestamp(),
   token: z.string(),
@@ -31,6 +30,15 @@ const sessionSchema = z.object({
   activeOrganizationId: idValueSchema.nullable().optional(),
   ...timestamps(),
 });
+
+export const authSessionResponseSchema = z
+  .object({
+    session: sessionSchema,
+    user: userSchema,
+  })
+  .nullable();
+
+export type AuthSessionResponse = z.infer<typeof authSessionResponseSchema>;
 
 // ─── Account ─────────────────────────────────────────────────────────────────
 

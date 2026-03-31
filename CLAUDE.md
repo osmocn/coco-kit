@@ -76,5 +76,6 @@ refactor(auth): remove better-auth from web, add Hono session API
 6. Reference issues with `Closes #N` or `See #N`
 7. Never commit `.env` files, secrets, or build artifacts
 8. Each commit must leave the codebase in a **working state**
+9. Do **not** add `Co-Authored-By` trailers unless the user explicitly asks
 
 ---

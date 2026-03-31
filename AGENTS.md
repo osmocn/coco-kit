@@ -26,4 +26,6 @@ overrides them.
 
 ## App-Specific Overlays
 
+- When working inside `apps/api`, also follow `apps/api/AGENTS.md`.
+- When working inside `apps/docs`, also follow `apps/docs/AGENTS.md`.
 - When working inside `apps/web`, also follow `apps/web/AGENTS.md`.

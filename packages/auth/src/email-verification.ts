@@ -171,7 +171,7 @@ export async function sendCurrentUserVerificationEmail(params: {
     resolvedCallbackURL = resolveTrustedCallbackURL(
       parsedBody.data.callbackURL,
       params.headers,
-      "/email-verification?status=success&next=/account",
+      "/email-verification?status=success",
     );
   } catch (error) {
     return {

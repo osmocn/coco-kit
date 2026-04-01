@@ -1,7 +1,7 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import RegisterForm from "@/components/forms/register";
 import { getAuthSession } from "@/lib/auth-session";
+import { RegisterForm } from "@/components/forms/register";
 
 export default async function RegisterPage() {
   const session = await getAuthSession({ headers: await headers() });

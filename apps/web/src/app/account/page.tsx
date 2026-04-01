@@ -33,7 +33,7 @@ export default async function AccountPage() {
           <h1 className="mt-3 text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
             Manage your account.
           </h1>
-          <p className="mt-3 max-w-2xl text-sm leading-7 text-muted sm:text-base">
+          <p className="mt-3 max-w-2xl text-sm leading-7 sm:text-base">
             This page is protected. Update your profile details here, review
             your active session, and jump back home whenever you need to.
           </p>
@@ -51,7 +51,7 @@ export default async function AccountPage() {
 
             <div className="mt-5 space-y-4">
               <div className="rounded-[1.25rem] border border-line bg-surface-strong p-4">
-                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted">
+                <p className="text-xs font-semibold uppercase tracking-[0.2em]">
                   Session Expires
                 </p>
                 <p className="mt-2 text-base font-medium text-ink">
@@ -60,7 +60,7 @@ export default async function AccountPage() {
               </div>
 
               <div className="rounded-[1.25rem] border border-line bg-surface-strong p-4">
-                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted">
+                <p className="text-xs font-semibold uppercase tracking-[0.2em]">
                   Last Updated
                 </p>
                 <p className="mt-2 text-base font-medium text-ink">

@@ -45,7 +45,7 @@ function NoticeBanner({ notice }: { notice: Notice }) {
       ? "border-destructive/30 bg-destructive/10 text-destructive"
       : notice.tone === "success"
         ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-700"
-        : "border-border bg-muted/40 text-muted-foreground";
+        : "border-border bg-muted/40-foreground";
 
   return (
     <p
@@ -342,7 +342,7 @@ export function AccountForm({ user }: AccountFormProps) {
         <h2 className="text-2xl font-semibold tracking-tight text-ink">
           Edit account details
         </h2>
-        <p className="text-sm leading-7 text-muted sm:text-base">
+        <p className="text-sm leading-7 sm:text-base">
           Update your display name now, and request an email change whenever you
           need it.
         </p>
@@ -350,14 +350,14 @@ export function AccountForm({ user }: AccountFormProps) {
 
       <div className="mt-5 flex flex-col gap-4 rounded-[1.25rem] border border-line bg-surface-strong p-4">
         <div className="flex flex-wrap items-center gap-2">
-          <span className="text-xs font-semibold uppercase tracking-[0.2em] text-muted">
+          <span className="text-xs font-semibold uppercase tracking-[0.2em]">
             Current Email
           </span>
           <span className="text-sm font-medium text-ink">{profile.email}</span>
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
-          <span className="text-xs font-semibold uppercase tracking-[0.2em] text-muted">
+          <span className="text-xs font-semibold uppercase tracking-[0.2em]">
             Verification
           </span>
           <span className="text-sm font-medium text-ink">
@@ -378,11 +378,11 @@ export function AccountForm({ user }: AccountFormProps) {
 
         {pendingEmail ? (
           <div className="rounded-[1rem] border border-dashed border-line px-4 py-3">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em]">
               New Email Awaiting Approval
             </p>
             <p className="mt-2 text-sm font-medium text-ink">{pendingEmail}</p>
-            <p className="mt-2 text-sm leading-6 text-muted">
+            <p className="mt-2 text-sm leading-6">
               Check {profile.email} to approve this change. After approval,{" "}
               {pendingEmail} becomes your sign-in email and you can verify it
               from here.

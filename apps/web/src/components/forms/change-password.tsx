@@ -17,9 +17,7 @@ import { authClient } from "@/lib/auth-client";
 const schema = z
   .object({
     currentPassword: z.string().min(1, "Current password is required"),
-    newPassword: z
-      .string()
-      .min(8, "Password must be at least 8 characters"),
+    newPassword: z.string().min(8, "Password must be at least 8 characters"),
     confirmNewPassword: z.string(),
   })
   .refine((data) => data.newPassword === data.confirmNewPassword, {
@@ -83,7 +81,7 @@ export function ChangePasswordForm() {
         <h2 className="text-2xl font-semibold tracking-tight text-ink">
           Change password
         </h2>
-        <p className="text-sm leading-7 text-muted sm:text-base">
+        <p className="text-sm leading-7 sm:text-base">
           Enter your current password and choose a new one.
         </p>
       </div>
@@ -103,7 +101,6 @@ export function ChangePasswordForm() {
 
         {!errors.root?.message && notice ? (
           <p
-            role="status"
             className={`rounded-[1.25rem] border px-4 py-3 text-sm ${
               notice.tone === "success"
                 ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-700"
@@ -145,9 +142,7 @@ export function ChangePasswordForm() {
             {errors.newPassword ? (
               <FieldDescription>{errors.newPassword.message}</FieldDescription>
             ) : (
-              <FieldDescription>
-                At least 8 characters.
-              </FieldDescription>
+              <FieldDescription>At least 8 characters.</FieldDescription>
             )}
           </Field>
 

@@ -17,7 +17,7 @@ export default function ApiReferencePage() {
         <h1 className="mt-4 max-w-3xl font-display text-5xl leading-[1.04] text-ink sm:text-6xl">
           Keep the exact things close at hand: routes, commands, and config.
         </h1>
-        <p className="mt-5 max-w-2xl text-base leading-8 text-muted sm:text-lg">
+        <p className="mt-5 max-w-2xl text-base leading-8 sm:text-lg">
           This starter page is shaped like a reference index, ready for the
           specific surface area your team will document over time.
         </p>
@@ -35,7 +35,7 @@ export default function ApiReferencePage() {
             <h2 className="mt-4 text-2xl font-semibold tracking-tight text-ink">
               {group.title}
             </h2>
-            <p className="mt-4 text-sm leading-7 text-muted">{group.summary}</p>
+            <p className="mt-4 text-sm leading-7">{group.summary}</p>
             <ul className="mt-5 space-y-3">
               {group.items.map((item) => (
                 <li

@@ -18,7 +18,7 @@ export default function GuidesPage() {
         <h1 className="mt-4 max-w-3xl font-display text-5xl leading-[1.04] text-ink sm:text-6xl">
           Start with a path, then deepen each section as the product grows.
         </h1>
-        <p className="mt-5 max-w-2xl text-base leading-8 text-muted sm:text-lg">
+        <p className="mt-5 max-w-2xl text-base leading-8 sm:text-lg">
           These starter tracks are organized the way a healthy docs site tends
           to evolve: onboarding, workflows, and references that keep technical
           details close to the product surface.
@@ -37,7 +37,7 @@ export default function GuidesPage() {
             <h2 className="mt-4 font-display text-3xl text-ink">
               {track.title}
             </h2>
-            <p className="mt-4 text-sm leading-7 text-muted">
+            <p className="mt-4 text-sm leading-7">
               {track.description}
             </p>
             <ul className="mt-5 space-y-3">
@@ -85,7 +85,7 @@ export default function GuidesPage() {
                 <h2 className="text-lg font-semibold text-ink">
                   {channel.title}
                 </h2>
-                <p className="mt-3 text-sm leading-7 text-muted">
+                <p className="mt-3 text-sm leading-7">
                   {channel.description}
                 </p>
               </article>

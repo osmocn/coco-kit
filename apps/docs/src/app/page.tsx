@@ -41,7 +41,7 @@ export default function Home() {
           <h1 className="mt-4 max-w-3xl font-display text-5xl leading-[1.04] text-ink sm:text-6xl">
             A calmer, sharper starting point for writing product docs.
           </h1>
-          <p className="mt-5 max-w-2xl text-base leading-8 text-muted sm:text-lg">
+          <p className="mt-5 max-w-2xl text-base leading-8 sm:text-lg">
             `apps/docs` mirrors the same Next.js, React, Tailwind v4, and
             TypeScript stack as `apps/web`, but the UI is shaped for knowledge
             architecture, navigation, and readable content blocks.
@@ -110,7 +110,7 @@ export default function Home() {
             <h2 className="mt-4 max-w-xl font-display text-3xl leading-tight text-ink">
               {item.title}
             </h2>
-            <p className="mt-4 max-w-2xl text-sm leading-7 text-muted">
+            <p className="mt-4 max-w-2xl text-sm leading-7">
               {item.description}
             </p>
             <p className="mt-6 text-sm font-semibold text-accent">
@@ -134,7 +134,7 @@ export default function Home() {
                 <h2 className="text-xl font-semibold tracking-tight text-ink">
                   {channel.title}
                 </h2>
-                <p className="mt-3 text-sm leading-7 text-muted">
+                <p className="mt-3 text-sm leading-7">
                   {channel.description}
                 </p>
               </article>
@@ -155,7 +155,7 @@ export default function Home() {
                 <p className="font-mono text-sm text-accent-strong">
                   {note.label}
                 </p>
-                <p className="mt-2 text-sm leading-7 text-muted">
+                <p className="mt-2 text-sm leading-7">
                   {note.detail}
                 </p>
               </div>
@@ -189,7 +189,7 @@ export default function Home() {
               className="rounded-[1.35rem] border border-line bg-surface-strong p-5"
             >
               <h3 className="text-lg font-semibold text-ink">{group.title}</h3>
-              <p className="mt-3 text-sm leading-7 text-muted">
+              <p className="mt-3 text-sm leading-7">
                 {group.summary}
               </p>
             </article>

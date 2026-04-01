@@ -408,7 +408,7 @@ export async function resolveEmailChangeConfirmationRedirectURL(params: {
     callbackURL: resolveTrustedCallbackURL(
       verificationCallbackURL ?? callbackURL,
       params.headers,
-      "/email-verification?status=success&next=/account",
+      "/email-verification?status=success",
     ),
     user: updatedUser,
   });
@@ -489,7 +489,7 @@ export async function changeAccountEmail(params: {
     resolvedVerificationCallbackURL = resolveTrustedCallbackURL(
       parsedBody.data.verificationCallbackURL ?? parsedBody.data.callbackURL,
       params.headers,
-      "/email-verification?status=success&next=/account",
+      "/email-verification?status=success",
     );
   } catch (error) {
     return {

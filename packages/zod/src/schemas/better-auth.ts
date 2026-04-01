@@ -27,7 +27,6 @@ export const sessionSchema = z.object({
   ipAddress: z.string().nullable().optional(),
   userAgent: z.string().nullable().optional(),
   userId: idValueSchema,
-  activeOrganizationId: idValueSchema.nullable().optional(),
   ...timestamps(),
 });
 
@@ -69,39 +68,3 @@ const verificationSchema = z.object({
   ...timestamps(),
 });
 
-// ─── Organization ─────────────────────────────────────────────────────────────
-
-// biome-ignore lint/correctness/noUnusedVariables: <->
-const organizationSchema = z.object({
-  ...idSchema(),
-  name: z.string(),
-  slug: z.string(),
-  logo: z.string().nullable().optional(),
-  createdAt: manualTimestamp(),
-  metadata: z.string().nullable().optional(),
-});
-
-// ─── Member ───────────────────────────────────────────────────────────────────
-
-// biome-ignore lint/correctness/noUnusedVariables: <->
-const memberSchema = z.object({
-  ...idSchema(),
-  organizationId: idValueSchema,
-  userId: idValueSchema,
-  role: z.string().default("member"),
-  createdAt: manualTimestamp(),
-});
-
-// ─── Invitation ───────────────────────────────────────────────────────────────
-
-// biome-ignore lint/correctness/noUnusedVariables: <->
-const invitationSchema = z.object({
-  ...idSchema(),
-  organizationId: idValueSchema,
-  email: z.email(),
-  role: z.string().nullable().optional(),
-  status: z.string().default("pending"),
-  expiresAt: manualTimestamp(),
-  createdAt: manualTimestamp(),
-  inviterId: idValueSchema,
-});

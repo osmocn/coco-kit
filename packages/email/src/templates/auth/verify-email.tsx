@@ -14,7 +14,7 @@ export default function VerifyEmailTemplate({ name, url }: VerifyEmailProps) {
       <Text style={styles.body}>Hi {name},</Text>
       <Text style={styles.body}>
         Click the button below to verify your email address. This link expires
-        in 24 hours.
+        in 1 hour.
       </Text>
       <Section style={styles.buttonSection}>
         <Button href={url} style={styles.button}>

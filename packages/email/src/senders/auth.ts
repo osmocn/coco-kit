@@ -7,7 +7,7 @@ import PasswordResetTemplate from "../templates/auth/password-reset";
 import PasswordResetSuccessTemplate from "../templates/auth/password-reset-success";
 import VerifyEmailTemplate from "../templates/auth/verify-email";
 
-const FROM = "Coco Kit <noreply@coco-kit.com>";
+const FROM = "Coco Kit <noreply@mail.ashokasec.com>";
 
 export async function sendVerifyEmail(
   to: string,

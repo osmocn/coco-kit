@@ -1,7 +1,7 @@
 import { Hono } from "hono";
-import { testEmailRouter } from "./test-email";
+import { accountRouter } from "./account";
 
 export const routes = new Hono()
-  .route("/test-email", testEmailRouter);
+  .route("/account", accountRouter);
 
 export type RoutesType = typeof routes;

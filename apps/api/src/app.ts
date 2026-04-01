@@ -2,14 +2,14 @@ import auth from "@coco-kit/auth";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
+import type { ApiAuthVariables } from "./lib/auth-env";
 import { env } from "./lib/env";
+import { normalizeAuthHandlerRequest } from "./lib/normalize-auth-handler-request";
 import { routes as allRoutes } from "./routes";
+export type { RoutesType } from "./routes";
 
 const app = new Hono<{
-  Variables: {
-    user: typeof auth.$Infer.Session.user | null;
-    session: typeof auth.$Infer.Session.session | null;
-  };
+  Variables: ApiAuthVariables;
 }>();
 
 app.use(
@@ -27,10 +27,6 @@ app.use(
 app.use("*", logger());
 
 app.use("*", async (c, next) => {
-  if (c.req.url === `${env.BETTER_AUTH_BASE_URL}/api/test-email`) {
-    return next()
-  }
-
   const session = await auth.api.getSession({
     headers: c.req.raw.headers,
   });
@@ -50,8 +46,22 @@ app.use("*", async (c, next) => {
 const routes = app
   .route("/api", allRoutes)
   .get("/", (c) => c.text("Hello Hono!"))
-  .on(["POST", "GET"], "/api/auth/*", (c) => {
-    return auth.handler(c.req.raw);
+  .on(["POST", "GET"], "/api/auth/*", async (c) => {
+    try {
+      const request = await normalizeAuthHandlerRequest(c.req.raw);
+      return auth.handler(request);
+    } catch (error) {
+      return c.json(
+        {
+          error: "Invalid Callback URL",
+          message:
+            error instanceof Error
+              ? error.message
+              : "Callback URL must stay within the app.",
+        },
+        400,
+      );
+    }
   });
 
 app.notFound((c) => c.json({ error: "Not Found" }, 404));

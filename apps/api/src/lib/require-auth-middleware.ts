@@ -1,14 +1,7 @@
-import type auth from "@coco-kit/auth";
 import { createMiddleware } from "hono/factory";
+import type { ApiAuthEnv } from "./auth-env";
 
-type AuthEnv = {
-  Variables: {
-    user: typeof auth.$Infer.Session.user | null;
-    session: typeof auth.$Infer.Session.session | null;
-  };
-};
-
-export const requireAuth = createMiddleware<AuthEnv>(async (c, next) => {
+export const requireAuth = createMiddleware<ApiAuthEnv>(async (c, next) => {
   const session = c.get("session");
   const user = c.get("user");
   if (!user || !session) return c.body(null, 401);

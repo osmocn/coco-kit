@@ -3,9 +3,9 @@ import { email } from "@coco-kit/email";
 import { getEnvVariable } from "@coco-kit/utils";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { openAPI, organization, magicLink } from "better-auth/plugins";
+import { openAPI, magicLink } from "better-auth/plugins";
 
-const trustedOrigins = getEnvVariable("BETTER_AUTH_TRUSTED_ORIGINS")
+export const trustedOrigins = getEnvVariable("BETTER_AUTH_TRUSTED_ORIGINS")
   .split(",")
   .map((origin) => origin.trim())
   .filter(Boolean);
@@ -13,6 +13,9 @@ const trustedOrigins = getEnvVariable("BETTER_AUTH_TRUSTED_ORIGINS")
 if (trustedOrigins.length === 0) {
   throw new Error("Missing environment variable: BETTER_AUTH_TRUSTED_ORIGINS");
 }
+
+export const authBaseURL = getEnvVariable("BETTER_AUTH_BASE_URL");
+const authSecret = getEnvVariable("BETTER_AUTH_SECRET");
 
 export const auth = betterAuth({
   advanced: {
@@ -23,7 +26,6 @@ export const auth = betterAuth({
     },
   },
   plugins: [
-    organization(),
     openAPI(),
     magicLink({
       // emails
@@ -33,19 +35,16 @@ export const auth = betterAuth({
     }),
   ],
   basePath: "/api/auth",
-  baseURL: getEnvVariable("BETTER_AUTH_BASE_URL"),
-  secret: getEnvVariable("BETTER_AUTH_SECRET"),
+  baseURL: authBaseURL,
+  secret: authSecret,
   trustedOrigins,
   database: drizzleAdapter(db, {
     provider: "pg",
     schema: {
       user: authSchema.user,
       account: authSchema.account,
-      member: authSchema.member,
-      invitation: authSchema.invitation,
       session: authSchema.session,
       verification: authSchema.verification,
-      organization: authSchema.organization,
     },
   }),
   user: {
@@ -76,7 +75,7 @@ export const auth = betterAuth({
   },
   emailVerification: {
     autoSignInAfterVerification: true,
-    sendOnSignUp: true,
+    sendOnSignUp: false,
 
     // emails
     sendVerificationEmail: async ({ url, user }) => {

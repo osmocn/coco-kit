@@ -19,8 +19,9 @@ import { useRouter } from "next/navigation";
 import { useId } from "react";
 import { useForm } from "react-hook-form";
 import { MagicLinkForm } from "@/components/forms/magic-link-form";
+import { apiClient } from "@/lib/api-client";
 import { authClient } from "@/lib/auth-client";
-import { env } from "@/lib/env";
+import { getEmailVerificationCallbackURL } from "@/lib/email-verification";
 
 const RegisterForm = () => {
   const emailId = useId();
@@ -50,7 +51,7 @@ const RegisterForm = () => {
       name: username,
       email: values.email,
       password: values.password,
-      callbackURL: `${env.NEXT_PUBLIC_BASE_URL}/account`,
+      callbackURL: "/account",
     });
 
     if (error) {
@@ -60,7 +61,16 @@ const RegisterForm = () => {
       return;
     }
 
-    router.replace("/account");
+    const verificationResponse =
+      await apiClient.account["send-verification-email"].$post({
+        json: {
+          callbackURL: getEmailVerificationCallbackURL(),
+        },
+      });
+
+    router.replace(
+      `/account?registered=1&verificationEmailSent=${verificationResponse.ok ? "1" : "0"}`,
+    );
   }
 
   return (

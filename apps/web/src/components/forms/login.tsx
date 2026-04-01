@@ -21,7 +21,6 @@ import { useId } from "react";
 import { useForm } from "react-hook-form";
 import { MagicLinkForm } from "@/components/forms/magic-link-form";
 import { authClient } from "@/lib/auth-client";
-import { env } from "@/lib/env";
 
 const LoginForm = () => {
   const emailId = useId();
@@ -46,7 +45,7 @@ const LoginForm = () => {
     const { error } = await authClient.signIn.email({
       email: values.email,
       password: values.password,
-      callbackURL: `${env.NEXT_PUBLIC_BASE_URL}/account`,
+      callbackURL: "/account",
     });
 
     if (error) {

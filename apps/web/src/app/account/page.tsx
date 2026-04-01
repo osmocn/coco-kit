@@ -2,6 +2,8 @@ import { Button } from "@coco-kit/ui/components/ui/button";
 import { headers } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { AccountForm } from "@/components/forms/account";
+import { ChangePasswordForm } from "@/components/forms/change-password";
 import { SignOutButton } from "@/components/sign-out-button";
 import { getAuthSession } from "@/lib/auth-session";
 
@@ -29,49 +31,18 @@ export default async function AccountPage() {
             Private Account
           </p>
           <h1 className="mt-3 text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
-            Welcome back, {user.name}.
+            Manage your account.
           </h1>
           <p className="mt-3 max-w-2xl text-sm leading-7 text-muted sm:text-base">
-            This page is protected. Anonymous visitors can view the home page,
-            but signed-in users land here when they try to access auth screens.
+            This page is protected. Update your profile details here, review
+            your active session, and jump back home whenever you need to.
           </p>
         </header>
 
+        <ChangePasswordForm />
+
         <section className="grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
-          <article className="rounded-[2rem] border border-line bg-surface p-6 shadow-[var(--shadow)]">
-            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-accent-deep">
-              Profile
-            </p>
-
-            <dl className="mt-5 grid gap-4">
-              <div className="rounded-[1.25rem] border border-line bg-surface-strong p-4">
-                <dt className="text-xs font-semibold uppercase tracking-[0.2em] text-muted">
-                  Name
-                </dt>
-                <dd className="mt-2 text-base font-medium text-ink">
-                  {user.name}
-                </dd>
-              </div>
-
-              <div className="rounded-[1.25rem] border border-line bg-surface-strong p-4">
-                <dt className="text-xs font-semibold uppercase tracking-[0.2em] text-muted">
-                  Email
-                </dt>
-                <dd className="mt-2 text-base font-medium text-ink">
-                  {user.email}
-                </dd>
-              </div>
-
-              <div className="rounded-[1.25rem] border border-line bg-surface-strong p-4">
-                <dt className="text-xs font-semibold uppercase tracking-[0.2em] text-muted">
-                  Email Verification
-                </dt>
-                <dd className="mt-2 text-base font-medium text-ink">
-                  {user.emailVerified ? "Verified" : "Pending"}
-                </dd>
-              </div>
-            </dl>
-          </article>
+          <AccountForm user={user} />
 
           <aside className="rounded-[2rem] border border-line bg-surface p-6 shadow-[var(--shadow)]">
             <p className="text-sm font-semibold uppercase tracking-[0.24em] text-accent-deep">

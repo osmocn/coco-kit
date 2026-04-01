@@ -9,17 +9,19 @@ type GetAuthSessionOptions = {
 export async function getAuthSession(
   options: GetAuthSessionOptions = {},
 ): Promise<AuthSessionResponse> {
+  const sessionURL = new URL(
+    `${env.NEXT_PUBLIC_API_URL}/api/auth/get-session`,
+  );
+  sessionURL.searchParams.set("disableCookieCache", "true");
+
   const requestInit = {
     cache: "no-store" as const,
     ...(options.headers ? { headers: options.headers } : {}),
   };
 
-  const response = await fetch(
-    `${env.NEXT_PUBLIC_API_URL}/api/auth/get-session`,
-    {
-      ...requestInit,
-    },
-  );
+  const response = await fetch(sessionURL, {
+    ...requestInit,
+  });
 
   if (!response.ok) {
     return null;
@@ -29,5 +31,4 @@ export async function getAuthSession(
   const parsedSession = authSessionResponseSchema.safeParse(payload);
 
   return parsedSession.success ? parsedSession.data : null;
-
 }

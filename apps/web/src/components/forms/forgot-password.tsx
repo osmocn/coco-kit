@@ -14,7 +14,6 @@ import { useId, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { authClient } from "@/lib/auth-client";
-import { env } from "@/lib/env";
 
 const schema = z.object({
   email: z.string().email("Enter a valid email address"),
@@ -40,7 +39,7 @@ const ForgotPasswordForm = () => {
 
     const { error } = await authClient.requestPasswordReset({
       email: values.email,
-      redirectTo: `${env.NEXT_PUBLIC_BASE_URL}/reset-password`,
+      redirectTo: "/reset-password",
     });
 
     if (error) {
@@ -56,11 +55,11 @@ const ForgotPasswordForm = () => {
   if (sent) {
     return (
       <p className="rounded-[1.25rem] border border-border bg-muted/40 px-4 py-3 text-center text-sm text-muted-foreground">
-        Check your inbox — we sent a password reset link to{" "}
+        If an account exists for{" "}
         <span className="font-medium text-foreground">
           {form.getValues("email")}
         </span>
-        .
+        , you'll receive a password reset link shortly.
       </p>
     );
   }

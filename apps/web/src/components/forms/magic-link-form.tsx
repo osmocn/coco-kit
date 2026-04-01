@@ -14,7 +14,6 @@ import { useId, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { authClient } from "@/lib/auth-client";
-import { env } from "@/lib/env";
 
 const schema = z.object({
   email: z.string().email("Enter a valid email address"),
@@ -40,7 +39,7 @@ export function MagicLinkForm() {
 
     const { error } = await authClient.signIn.magicLink({
       email: values.email,
-      callbackURL: `${env.NEXT_PUBLIC_BASE_URL}/account`,
+      callbackURL: "/account",
     });
 
     if (error) {

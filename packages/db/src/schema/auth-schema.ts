@@ -14,6 +14,10 @@ export const user = createTable("user", {
   email: text("email").notNull().unique(),
   emailVerified: boolean("email_verified").default(false).notNull(),
   image: text("image"),
+  role: text("role"),
+  banned: boolean("banned").default(false),
+  banReason: text("ban_reason"),
+  banExpires: eventTimestamptz("ban_expires"),
   ...timestampColumns(),
 });
 
@@ -25,6 +29,7 @@ export const session = createTable(
     token: text("token").notNull().unique(),
     ipAddress: text("ip_address"),
     userAgent: text("user_agent"),
+    impersonatedBy: text("impersonated_by"),
     userId: uuid("user_id")
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),

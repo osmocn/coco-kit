@@ -4,6 +4,7 @@ import {
   resolveTrustedCallbackURL,
 } from "../callback-url";
 import { sendVerificationEmailToUser } from "../email-verification";
+import type { AuthSessionUser } from "../types";
 
 type AuthContext = Awaited<typeof auth.$context>;
 
@@ -410,7 +411,7 @@ export async function resolveEmailChangeConfirmationRedirectURL(params: {
       params.headers,
       "/email-verification?status=success",
     ),
-    user: updatedUser,
+    user: updatedUser as unknown as AuthSessionUser,
   });
 
   return appendQueryParams(callbackURL, {
@@ -605,7 +606,7 @@ export async function changeAccountEmail(params: {
   const verificationEmailResult = await sendVerificationEmailToUser({
     authContext,
     callbackURL: resolvedVerificationCallbackURL,
-    user: updatedUser,
+    user: updatedUser as unknown as AuthSessionUser,
   });
 
   await authContext.internalAdapter.deleteVerificationByIdentifier(

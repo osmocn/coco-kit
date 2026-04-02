@@ -3,7 +3,7 @@ import { email } from "@coco-kit/email";
 import { getEnvVariable } from "@coco-kit/utils";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { openAPI, magicLink } from "better-auth/plugins";
+import { openAPI, admin, magicLink } from "better-auth/plugins";
 
 export const trustedOrigins = getEnvVariable("BETTER_AUTH_TRUSTED_ORIGINS")
   .split(",")
@@ -27,6 +27,7 @@ export const auth = betterAuth({
   },
   plugins: [
     openAPI(),
+    admin(),
     magicLink({
       // emails
       sendMagicLink: async ({ email: to, url }) => {

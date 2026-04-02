@@ -15,8 +15,14 @@ export const userSchema = z.object({
   email: z.email(),
   emailVerified: z.boolean().default(false),
   image: z.string().nullable().optional(),
+  role: z.string().nullable().optional(),
+  banned: z.boolean().nullable().optional(),
+  banReason: z.string().nullable().optional(),
+  banExpires: eventTimestamp().optional(),
   ...timestamps(),
 });
+
+export type User = z.infer<typeof userSchema>;
 
 // ─── Session ─────────────────────────────────────────────────────────────────
 
@@ -26,6 +32,7 @@ export const sessionSchema = z.object({
   token: z.string(),
   ipAddress: z.string().nullable().optional(),
   userAgent: z.string().nullable().optional(),
+  impersonatedBy: z.string().nullable().optional(),
   userId: idValueSchema,
   ...timestamps(),
 });

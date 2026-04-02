@@ -2,7 +2,7 @@ import { type NextRequest, NextResponse } from "next/server";
 import { getAuthSession } from "@/lib/auth-session";
 
 const guestOnlyRoutes = ["/login", "/register"];
-const protectedRoutes = ["/account"];
+const protectedRoutes = ["/account", "/admin"];
 const publicRoutes = ["/", "/forgot-password", "/email-verification"];
 
 function matchesRoute(pathname: string, routes: readonly string[]) {
@@ -26,6 +26,10 @@ export async function proxy(request: NextRequest) {
   }
 
   const session = await getAuthSession({ headers: request.headers });
+
+  if (pathname.startsWith("/admin") && session?.user?.role !== "admin") {
+    return NextResponse.rewrite(new URL("/_not-found", request.url));
+  }
 
   if (session?.user && isGuestOnlyRoute) {
     return NextResponse.redirect(new URL("/account", request.url));

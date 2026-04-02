@@ -16,7 +16,8 @@
     "db:studio": "pnpm --filter @coco-kit/db db:studio",
     "check": "pnpm lint && pnpm typecheck",
     "format": "biome format --write .",
-    "clean": "node scripts/clean.mjs"
+    "clean": "node scripts/clean.mjs",
+    "rebrand": "node scripts/rebrand.mjs --apply"
   },
   "devDependencies": {
     "@biomejs/biome": "2.2.0",

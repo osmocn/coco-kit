@@ -16,7 +16,7 @@ const page = () => {
         <ChangePasswordForm />
       </div>
 
-      <div className="border rounded-lg p-4 pt-3 border-red-300 bg-red-50 max-w-lg">
+      <div className="border rounded-lg p-4 pt-3 border-destructive bg-destructive/5 max-w-lg">
         <div className="flex flex-col gap-1 mb-4">
           <h2 className="text-xl font-bold">Sign out</h2>
           <p className="text-sm text-muted-foreground">

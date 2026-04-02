@@ -6,6 +6,7 @@ import {
   User,
   Fan,
 } from "lucide-react";
+import { siteConfig } from "@/config/site";
 
 import { NavMain } from "./nav-main";
 import {
@@ -58,7 +59,7 @@ export function UserSidebar({
             <SidebarMenuButton asChild className="p-1.5">
               <Link href="/" className="flex items-center gap-2">
                 <Fan className="size-5 animate-spin" />
-                <span className="text-base font-semibold">Coco</span>
+                <span className="text-base font-semibold">{siteConfig.name}</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>

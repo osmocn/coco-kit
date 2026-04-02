@@ -1,222 +1,219 @@
+import Link from "next/link";
+import { headers } from "next/headers";
+import {
+  Braces,
+  KeyRound,
+  Lock,
+  Mail,
+  MailCheck,
+  Package,
+  RefreshCcw,
+  Shield,
+} from "lucide-react";
+import { Button } from "@coco-kit/ui/components/ui/button";
 import Navbar from "@/components/navbar";
 import { getAuthSession } from "@/lib/auth-session";
-import { headers } from "next/headers";
 
-const workspaceHighlights = [
-  {
-    title: "Shared tooling, one source of truth",
-    description:
-      "Biome now lives at the repo root, so every app or package inherits the same formatting and lint rules by default.",
-  },
-  {
-    title: "Reusable TypeScript defaults",
-    description:
-      "A shared base tsconfig keeps strict options in one place while each app adds only the pieces it actually needs.",
-  },
-  {
-    title: "Ready for more than one app",
-    description:
-      "Turbo tasks are wired for build, dev, lint, and typecheck so the workspace can grow without redoing the setup.",
-  },
+const authFeatures = [
+  { icon: Lock, label: "Email & password" },
+  { icon: Mail, label: "Magic links" },
+  { icon: MailCheck, label: "Email verification" },
+  { icon: KeyRound, label: "Forgot & reset password" },
+  { icon: RefreshCcw, label: "Email address changes" },
+  { icon: Shield, label: "Session management" },
 ] as const;
 
-const commands = [
-  "pnpm install",
-  "pnpm dev",
-  "pnpm lint",
-  "pnpm typecheck",
+const stack = [
+  "Next.js 16",
+  "Hono",
+  "Drizzle",
+  "Postgres",
+  "Zod v4",
+  "React Email",
+  "Turborepo",
+  "pnpm workspaces",
+  "Biome",
+  "shadcn/ui",
+  "Tailwind v4",
+  "TypeScript",
 ] as const;
 
-const workspaceMap = [
+const steps = [
   {
-    label: "apps/web",
-    detail:
-      "Next.js app with Tailwind v4, typed routes, and the shared workspace configs.",
+    n: "01",
+    title: "Clone and install",
+    body: "pnpm install from the root. One lockfile, all apps.",
   },
   {
-    label: "packages",
-    detail:
-      "Reserved for shared UI, utils, configs, or API clients when you start splitting code out.",
+    n: "02",
+    title: "Set your env",
+    body: "Add your database URL and auth secret, run migrations.",
   },
   {
-    label: "biome.json",
-    detail: "Central linting and formatting rules for the whole monorepo.",
-  },
-  {
-    label: "tsconfig.base.json",
-    detail: "Strict reusable compiler defaults extended by apps and packages.",
-  },
-  {
-    label: "turbo.json",
-    detail: "Task graph and caching rules for your workspace commands.",
-  },
-] as const;
-
-const resourceLinks = [
-  {
-    href: "https://turbo.build/repo/docs",
-    label: "Turborepo docs",
-  },
-  {
-    href: "https://nextjs.org/docs",
-    label: "Next.js docs",
-  },
-  {
-    href: "https://biomejs.dev/guides/getting-started/",
-    label: "Biome guides",
+    n: "03",
+    title: "Ship",
+    body: "pnpm dev spins everything up. Change a file — it reloads.",
   },
 ] as const;
 
 export default async function Home() {
   const session = await getAuthSession({ headers: await headers() });
+
   return (
     <>
       <Navbar session={session} />
-      <main className="relative isolate overflow-hidden">
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-x-0 top-0 h-80 bg-[radial-gradient(circle_at_top,_rgba(216,93,54,0.18),_transparent_62%)]"
-        />
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute right-0 top-32 h-72 w-72 rounded-full bg-accent-soft blur-3xl"
-        />
 
-        <div className="mx-auto flex min-h-screen max-w-6xl flex-col gap-14 px-6 py-8 sm:px-10 lg:px-12">
-          <header className="flex flex-col gap-5 rounded-[2rem] border border-line bg-surface p-6 shadow-[var(--shadow)] backdrop-blur sm:flex-row sm:items-center sm:justify-between">
-            <div className="space-y-2">
-              <p className="text-sm font-semibold uppercase tracking-[0.28em] text-accent-deep">
-                Coco Kit
+      <main className="flex flex-col">
+        {/* ── Hero ─────────────────────────────────────────── */}
+        <section className="relative flex flex-col items-center overflow-hidden px-6 pb-24 pt-32 text-center">
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-x-0 top-0 h-72 bg-[radial-gradient(ellipse_at_top,hsl(var(--primary)/0.15),transparent_65%)]"
+          />
+          <span className="relative mb-6 inline-flex items-center rounded-full border px-3 py-1 text-xs text-muted-foreground">
+            Auth · API · UI · Monorepo
+          </span>
+          <h1 className="relative max-w-3xl bg-gradient-to-b from-foreground to-foreground/50 bg-clip-text text-6xl font-bold tracking-tight text-transparent sm:text-7xl pb-5">
+            Skip the setup.
+            <br />
+            Start building.
+          </h1>
+          <p className="relative mt-4 max-w-xl text-base text-muted-foreground sm:text-lg">
+            Auth, a typed Hono API, Drizzle + Postgres, and a shared shadcn UI
+            library — all wired together so you don’t waste time doing it
+            yourself.
+          </p>
+          <div className="relative mt-8 flex items-center gap-3">
+            <Button asChild size="lg" variant="glow">
+              <Link href="/register">Get started</Link>
+            </Button>
+            <Button asChild size="lg" variant="ghost">
+              <Link href="/login">Sign in →</Link>
+            </Button>
+          </div>
+        </section>
+
+        {/* ── Bento ────────────────────────────────────────── */}
+        <section className="mx-auto w-full max-w-5xl px-6 pb-24">
+          <div className="grid grid-cols-1 gap-3 lg:grid-cols-5">
+            {/* Auth — wide card */}
+            <div className="flex flex-col rounded-2xl border bg-card p-7 lg:col-span-3">
+              <p className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
+                Authentication
               </p>
-              <h1 className="max-w-2xl text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
-                Your Turborepo starter is wired up and ready to grow.
-              </h1>
-            </div>
-
-            <div className="inline-flex w-fit items-center rounded-full border border-line bg-surface-strong px-4 py-2 text-sm">
-              Shared Biome + shared TS config + Turbo tasks
-            </div>
-          </header>
-
-          <section className="grid gap-6 lg:grid-cols-[1.35fr_0.9fr]">
-            <div className="rounded-[2rem] border border-line bg-surface-strong p-7 shadow-[var(--shadow)]">
-              <p className="mb-4 text-sm font-semibold uppercase tracking-[0.28em] text-accent-deep">
-                Starter Foundation
-              </p>
-              <h2 className="max-w-2xl text-4xl font-semibold tracking-tight text-ink sm:text-5xl">
-                One clean workspace for shipping apps, shared packages, and
-                future tooling.
+              <h2 className="mt-2 text-xl font-bold tracking-tight">
+                Auth that actually covers everything.
               </h2>
-              <p className="mt-5 max-w-2xl text-base leading-8 sm:text-lg">
-                The app is no longer the default Create Next App screen. It now
-                explains the workspace, points at the important files, and gives
-                you a stronger base to build from.
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                Most starters give you a login page and leave the rest to you.
+                This one doesn’t. Magic links, email verification, password
+                resets, changing emails — it’s all already working.
               </p>
-
-              <div className="mt-8 flex flex-wrap gap-3">
-                {commands.map((command) => (
-                  <span
-                    key={command}
-                    className="rounded-full border border-line bg-canvas px-4 py-2 font-mono text-sm text-ink"
+              <ul className="mt-6 grid grid-cols-1 gap-2 sm:grid-cols-2">
+                {authFeatures.map(({ icon: Icon, label }) => (
+                  <li
+                    key={label}
+                    className="flex items-center gap-2.5 text-sm text-muted-foreground"
                   >
-                    {command}
-                  </span>
+                    <Icon className="size-3.5 shrink-0" />
+                    {label}
+                  </li>
                 ))}
+              </ul>
+              <div className="mt-6">
+                <Button asChild variant="outline" size="sm">
+                  <Link href="/register">Try the auth →</Link>
+                </Button>
               </div>
             </div>
 
-            <aside className="rounded-[2rem] border border-line bg-[#201d19] p-7 text-[#f7f0e7] shadow-[var(--shadow)]">
-              <p className="text-sm font-semibold uppercase tracking-[0.28em] text-[#f4b39e]">
-                First Moves
-              </p>
-              <ol className="mt-6 space-y-5 text-sm leading-7 text-[#e8dccd]">
-                <li>
-                  Run <span className="font-mono text-white">pnpm install</span>{" "}
-                  from the repo root so Turbo and the web app share one
-                  lockfile.
-                </li>
-                <li>
-                  Start local development with{" "}
-                  <span className="font-mono text-white">pnpm dev</span> or just
-                  the app with{" "}
-                  <span className="font-mono text-white">pnpm dev:web</span>.
-                </li>
-                <li>
-                  Add shared code in{" "}
-                  <span className="font-mono text-white">packages</span> when
-                  you are ready to reuse UI, schemas, or utilities.
-                </li>
-              </ol>
-            </aside>
-          </section>
+            {/* Side cards */}
+            <div className="flex flex-col gap-3 lg:col-span-2">
+              <div className="flex flex-1 flex-col justify-between rounded-2xl border bg-card p-7">
+                <Package className="size-5 text-muted-foreground" />
+                <div className="mt-auto pt-10">
+                  <h3 className="font-semibold">Monorepo from day one</h3>
+                  <p className="mt-1.5 text-sm text-muted-foreground">
+                    Shared UI, configs, and tooling across your apps without the
+                    usual mess.
+                  </p>
+                </div>
+              </div>
+              <div className="flex flex-1 flex-col justify-between rounded-2xl border bg-card p-7">
+                <Braces className="size-5 text-muted-foreground" />
+                <div className="mt-auto pt-10">
+                  <h3 className="font-semibold">Type-safe end to end</h3>
+                  <p className="mt-1.5 text-sm text-muted-foreground">
+                    Your API, forms, and database all speak the same language.
+                    No weird mismatches later.
+                  </p>
+                </div>
+              </div>
+            </div>
 
-          <section className="grid gap-5 lg:grid-cols-3">
-            {workspaceHighlights.map((item) => (
-              <article
-                key={item.title}
-                className="rounded-[1.75rem] border border-line bg-surface p-6 shadow-[var(--shadow)]"
-              >
-                <h3 className="text-xl font-semibold tracking-tight text-ink">
-                  {item.title}
-                </h3>
-                <p className="mt-3 text-sm leading-7">{item.description}</p>
-              </article>
-            ))}
-          </section>
-
-          <section className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
-            <div className="rounded-[2rem] border border-line bg-surface p-7 shadow-[var(--shadow)]">
-              <p className="text-sm font-semibold uppercase tracking-[0.28em] text-accent-deep">
-                Workspace Map
-              </p>
-              <div className="mt-6 space-y-4">
-                {workspaceMap.map((item) => (
-                  <div
-                    key={item.label}
-                    className="rounded-[1.25rem] border border-line bg-surface-strong p-4"
-                  >
-                    <p className="font-mono text-sm text-accent-deep">
-                      {item.label}
+            {/* Steps — full width */}
+            <div className="overflow-hidden rounded-2xl border lg:col-span-5">
+              <div className="grid divide-y sm:grid-cols-3 sm:divide-x sm:divide-y-0">
+                {steps.map((s) => (
+                  <div key={s.n} className="bg-card px-7 py-6">
+                    <span className="font-mono text-xs text-muted-foreground/40">
+                      {s.n}
+                    </span>
+                    <h3 className="mt-3 font-semibold">{s.title}</h3>
+                    <p className="mt-1.5 text-sm text-muted-foreground">
+                      {s.body}
                     </p>
-                    <p className="mt-2 text-sm leading-7">{item.detail}</p>
                   </div>
                 ))}
               </div>
             </div>
+          </div>
+        </section>
 
-            <div className="rounded-[2rem] border border-line bg-surface p-7 shadow-[var(--shadow)]">
-              <p className="text-sm font-semibold uppercase tracking-[0.28em] text-accent-deep">
-                Helpful Docs
-              </p>
-              <div className="mt-6 space-y-4">
-                {resourceLinks.map((link) => (
-                  <a
-                    key={link.href}
-                    href={link.href}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="group flex items-center justify-between rounded-[1.25rem] border border-line bg-surface-strong px-4 py-4 transition-transform duration-200 hover:-translate-y-0.5"
-                  >
-                    <span className="font-medium text-ink">{link.label}</span>
-                    <span className="text-sm transition-colors group-hover:text-accent-deep">
-                      Open
-                    </span>
-                  </a>
-                ))}
-              </div>
-
-              <div className="mt-6 rounded-[1.5rem] bg-accent-soft p-5">
-                <p className="text-sm font-semibold uppercase tracking-[0.24em] text-accent-deep">
-                  Next step
-                </p>
-                <p className="mt-3 text-sm leading-7 text-[#523629]">
-                  Create a second app or a shared package and this setup will
-                  keep the formatting, type safety, and task wiring consistent.
-                </p>
-              </div>
+        {/* ── Stack ────────────────────────────────────────── */}
+        <section className="px-6 pt-12 pb-32">
+          <div className="mx-auto max-w-4xl">
+            <p className="mb-5 text-center text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
+              Built with
+            </p>
+            <div className="flex flex-wrap justify-center gap-2">
+              {stack.map((name) => (
+                <span
+                  key={name}
+                  className="rounded-full border bg-muted/40 px-3.5 py-1 text-xs font-medium text-muted-foreground"
+                >
+                  {name}
+                </span>
+              ))}
             </div>
-          </section>
-        </div>
+          </div>
+        </section>
+
+        {/* ── CTA ──────────────────────────────────────────── */}
+        <section className="border-t bg-foreground px-6 py-24 text-background">
+          <div className="mx-auto max-w-xl text-center">
+            <h2 className="bg-gradient-to-b from-background to-background/60 bg-clip-text text-4xl font-bold tracking-tight text-transparent">
+              Ready to build?
+            </h2>
+            <p className="mt-4 text-sm text-background/50">
+              Create an account and begin with a setup that already handles the
+              annoying parts.
+            </p>
+            <div className="mt-8 flex justify-center gap-3">
+              <Button asChild size="lg" variant="secondary">
+                <Link href="/register">Create an account</Link>
+              </Button>
+              <Button
+                asChild
+                size="lg"
+                variant="ghost"
+                className="text-background hover:bg-background/10 hover:text-background"
+              >
+                <Link href="/login">Sign in →</Link>
+              </Button>
+            </div>
+          </div>
+        </section>
       </main>
     </>
   );

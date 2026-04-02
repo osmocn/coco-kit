@@ -55,12 +55,12 @@ export function MagicLinkForm() {
 
   if (sent) {
     return (
-      <div className="text-center space-y-4">
+      <div className="text-center space-y-4 border rounded-md pt-6 pb-4 bg-muted/40">
         <h1 className="text-xl font-semibold">Check your email</h1>
 
         <p className="text-sm text-muted-foreground">
           We sent a sign-in link to{" "}
-          <span className="font-medium">{form.getValues("email")}</span>
+          <span className="font-medium underline">{form.getValues("email")}</span>
         </p>
 
         <Button type="button" variant="ghost" onClick={() => setSent(false)}>

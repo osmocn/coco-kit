@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { inter } from "@/lib/fonts";
 
 export const metadata: Metadata = {
   title: {
@@ -17,7 +18,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="h-full bg-canvas antialiased">
-      <body className="min-h-full font-sans text-ink" >{children}</body>
+      <body className="min-h-full font-sans text-ink" style={inter.style} >{children}</body>
     </html>
   );
 }

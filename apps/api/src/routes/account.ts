@@ -1,4 +1,4 @@
-import {
+import auth, {
   changeAccountEmail,
   getPendingEmailChangeState,
   resolveEmailChangeConfirmationRedirectURL,
@@ -62,6 +62,31 @@ export const accountRouter = new Hono<ApiAuthEnv>()
 
     if (result.kind === "error") {
       return c.json({ message: result.message }, result.statusCode);
+    }
+
+    return c.json({ status: true }, 200);
+  })
+  .post("/set-password", requireAuth, async (c) => {
+    const body = await c.req.json().catch(() => null);
+    const newPassword =
+      body && typeof body === "object" && typeof body.newPassword === "string"
+        ? body.newPassword
+        : null;
+
+    if (!newPassword || newPassword.length < 8) {
+      return c.json({ message: "Password must be at least 8 characters." }, 400);
+    }
+
+    try {
+      await auth.api.setPassword({
+        body: { newPassword },
+        headers: c.req.raw.headers,
+      });
+    } catch (error) {
+      return c.json(
+        { message: error instanceof Error ? error.message : "Failed to set password." },
+        500,
+      );
     }
 
     return c.json({ status: true }, 200);

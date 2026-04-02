@@ -1,6 +1,6 @@
 "use client";
 
-import { useId } from "react";
+import { useId, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -25,6 +25,7 @@ import { PasswordField } from "../../auth-ui";
 export function LoginFields() {
   const emailId = useId();
   const router = useRouter();
+  const [isRedirecting, setIsRedirecting] = useState(false);
 
   const form = useForm<EmailPasswordAuth>({
     resolver: zodResolver(emailPasswordAuthSchema),
@@ -56,8 +57,13 @@ export function LoginFields() {
       return;
     }
 
+    // success → switch state
+    setIsRedirecting(true);
+
     router.replace("/account");
   }
+
+  const isBusy = isSubmitting || isRedirecting;
 
   return (
     <form
@@ -79,6 +85,7 @@ export function LoginFields() {
             autoFocus
             aria-invalid={!!errors.email}
             {...form.register("email")}
+            disabled={isBusy}
           />
         </FieldContent>
 
@@ -93,10 +100,23 @@ export function LoginFields() {
         registration={form.register("password")}
         error={errors.password}
         showForgotPassword
+        disabled={isBusy}
       />
 
-      <Button type="submit" disabled={isSubmitting} className="w-full">
-        {isSubmitting ? "Signing you in..." : "Sign in"}
+      <Button type="submit" disabled={isBusy} className="w-full">
+        {isSubmitting ? (
+          <span className="flex items-center justify-center gap-2">
+            <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+            Signing you in...
+          </span>
+        ) : isRedirecting ? (
+          <span className="flex items-center justify-center gap-2">
+            <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+            You're In, Redirecting...
+          </span>
+        ) : (
+          "Sign in"
+        )}
       </Button>
     </form>
   );

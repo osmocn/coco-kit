@@ -1,6 +1,6 @@
 "use client";
 
-import { useId } from "react";
+import { useId, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -28,6 +28,7 @@ import { PasswordField } from "../../auth-ui";
 export function RegisterFields() {
   const emailId = useId();
   const router = useRouter();
+  const [isRedirecting, setIsRedirecting] = useState(false);
 
   const form = useForm<EmailPasswordAuth>({
     resolver: zodResolver(emailPasswordAuthSchema),
@@ -42,6 +43,8 @@ export function RegisterFields() {
   const {
     formState: { errors, isSubmitting },
   } = form;
+
+  const isBusy = isSubmitting || isRedirecting;
 
   async function onSubmit(values: EmailPasswordAuth) {
     form.clearErrors("root");
@@ -72,6 +75,8 @@ export function RegisterFields() {
       },
     });
 
+    setIsRedirecting(true);
+
     router.replace(
       `/account?registered=1&verificationEmailSent=${
         verificationResponse.ok ? "1" : "0"
@@ -100,6 +105,7 @@ export function RegisterFields() {
               autoFocus
               aria-invalid={!!errors.email}
               {...form.register("email")}
+              disabled={isBusy}
             />
           </FieldContent>
 
@@ -117,11 +123,24 @@ export function RegisterFields() {
           error={errors.password}
           placeholder="Create a strong password"
           description="At least 8 characters recommended"
+          disabled={isBusy}
         />
       </FieldGroup>
 
-      <Button type="submit" disabled={isSubmitting} className="w-full">
-        {isSubmitting ? "Creating your account..." : "Create account"}
+      <Button type="submit" disabled={isBusy} className="w-full">
+        {isSubmitting ? (
+          <span className="flex items-center justify-center gap-2">
+            <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+            Creating your account...
+          </span>
+        ) : isRedirecting ? (
+          <span className="flex items-center justify-center gap-2">
+            <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+            Redirecting to your account...
+          </span>
+        ) : (
+          "Create account"
+        )}
       </Button>
     </form>
   );

@@ -70,6 +70,7 @@ type PasswordFieldProps = {
   error?: FieldError | undefined;
   registration: UseFormRegisterReturn;
   showForgotPassword?: boolean;
+  disabled?: boolean;
 };
 
 export function PasswordField({
@@ -78,6 +79,7 @@ export function PasswordField({
   description = "Keep it private.",
   error,
   registration,
+  disabled = false,
   showForgotPassword = false,
 }: PasswordFieldProps) {
   const id = useId();
@@ -105,6 +107,7 @@ export function PasswordField({
             placeholder={placeholder}
             autoComplete="current-password"
             aria-invalid={!!error}
+            disabled={disabled}
             {...registration}
             className="pr-10"
           />

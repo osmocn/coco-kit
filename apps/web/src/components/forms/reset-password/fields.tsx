@@ -7,6 +7,7 @@ import {
 } from "@coco-kit/ui/components/ui/field";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { authClient } from "@/lib/auth-client";
@@ -26,6 +27,7 @@ type ResetPasswordValues = z.infer<typeof schema>;
 
 export const ResetPasswordFields = ({ token }: { token: string }) => {
   const router = useRouter();
+  const [isRedirecting, setIsRedirecting] = useState(false);
 
   const form = useForm<ResetPasswordValues>({
     resolver: zodResolver(schema),
@@ -41,6 +43,8 @@ export const ResetPasswordFields = ({ token }: { token: string }) => {
     formState: { errors, isSubmitting },
   } = form;
 
+  const isBusy = isSubmitting || isRedirecting;
+
   async function onSubmit(values: ResetPasswordValues) {
     form.clearErrors("root");
 
@@ -55,6 +59,8 @@ export const ResetPasswordFields = ({ token }: { token: string }) => {
       });
       return;
     }
+
+    setIsRedirecting(true);
 
     router.replace("/login?reset=1");
   }
@@ -74,6 +80,7 @@ export const ResetPasswordFields = ({ token }: { token: string }) => {
           label="New password"
           placeholder="Create a new password"
           description="Use at least 8 characters"
+          disabled={isBusy}
         />
 
         <PasswordField
@@ -82,11 +89,24 @@ export const ResetPasswordFields = ({ token }: { token: string }) => {
           label="Confirm password"
           placeholder="Re-enter your password"
           description="Make sure both passwords match"
+          disabled={isBusy}
         />
       </FieldGroup>
 
-      <Button type="submit" disabled={isSubmitting} className="w-full">
-        {isSubmitting ? "Resetting password..." : "Reset password"}
+      <Button type="submit" disabled={isBusy} className="w-full">
+        {isSubmitting ? (
+          <span className="flex items-center justify-center gap-2">
+            <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+            Resetting password...
+          </span>
+        ) : isRedirecting ? (
+          <span className="flex items-center justify-center gap-2">
+            <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+            Redirecting to sign in...
+          </span>
+        ) : (
+          "Reset password"
+        )}
       </Button>
     </form>
   );

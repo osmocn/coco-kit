@@ -1,59 +1,78 @@
 "use client";
 
-import { Button } from "@coco-kit/ui/components/ui/button";
-import {
-  Field,
-  FieldDescription,
-  FieldGroup,
-  FieldLabel,
-} from "@coco-kit/ui/components/ui/field";
-import { Input } from "@coco-kit/ui/components/ui/input";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useId, useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { authClient } from "@/lib/auth-client";
 
-const schema = z
+import { authClient } from "@/lib/auth-client";
+import { apiClient } from "@/lib/api-client";
+
+import { Button } from "@coco-kit/ui/components/ui/button";
+import { FieldError as FieldErrorComponent } from "@coco-kit/ui/components/ui/field";
+import { PasswordField } from "../auth-ui";
+
+// ─── Schemas ────────────────────────────────────────────────────────────────
+
+const changeSchema = z
   .object({
-    currentPassword: z.string().min(1, "Current password is required"),
-    newPassword: z.string().min(8, "Password must be at least 8 characters"),
+    currentPassword: z.string().min(1, "Enter your current password"),
+    newPassword: z.string().min(8, "Must be at least 8 characters"),
     confirmNewPassword: z.string(),
   })
-  .refine((data) => data.newPassword === data.confirmNewPassword, {
-    message: "Passwords do not match",
+  .refine((d) => d.newPassword === d.confirmNewPassword, {
+    message: "Passwords don't match",
     path: ["confirmNewPassword"],
   });
 
-type ChangePasswordValues = z.infer<typeof schema>;
-
-type Notice = {
-  message: string;
-  tone: "error" | "success";
-} | null;
-
-export function ChangePasswordForm() {
-  const currentPasswordId = useId();
-  const newPasswordId = useId();
-  const confirmPasswordId = useId();
-  const [notice, setNotice] = useState<Notice>(null);
-
-  const form = useForm<ChangePasswordValues>({
-    resolver: zodResolver(schema),
-    defaultValues: {
-      currentPassword: "",
-      newPassword: "",
-      confirmNewPassword: "",
-    },
+const setSchema = z
+  .object({
+    newPassword: z.string().min(8, "Must be at least 8 characters"),
+    confirmNewPassword: z.string(),
+  })
+  .refine((d) => d.newPassword === d.confirmNewPassword, {
+    message: "Passwords don't match",
+    path: ["confirmNewPassword"],
   });
 
-  const {
-    formState: { errors, isSubmitting },
-  } = form;
+type ChangeValues = z.infer<typeof changeSchema>;
+type SetValues = z.infer<typeof setSchema>;
 
-  async function onSubmit(values: ChangePasswordValues) {
+type Notice = { message: string; tone: "success" } | null;
+
+// ─── Component ──────────────────────────────────────────────────────────────
+
+export function ChangePasswordForm() {
+  const [notice, setNotice] = useState<Notice>(null);
+  // null = loading, true = has credential account, false = magic-link only
+  const [hasPassword, setHasPassword] = useState<boolean | null>(null);
+  const [showSetForm, setShowSetForm] = useState(false);
+
+  useEffect(() => {
+    authClient.listAccounts().then(({ data, error }) => {
+      if (error || !data) {
+        // Only fill in the null slot; don't overwrite a value already set by onSetPassword
+        setHasPassword((current) => current ?? true);
+        return;
+      }
+
+      setHasPassword(
+        (current) => current ?? data.some((a) => a.providerId === "credential"),
+      );
+    });
+  }, []);
+
+  // ── Change password form (existing password) ────────────────────────────
+  const changeForm = useForm<ChangeValues>({
+    resolver: zodResolver(changeSchema),
+    defaultValues: { currentPassword: "", newPassword: "", confirmNewPassword: "" },
+    mode: "onSubmit",
+    reValidateMode: "onBlur",
+  });
+
+  async function onChangePassword(values: ChangeValues) {
     setNotice(null);
-    form.clearErrors("root");
+    changeForm.clearErrors("root");
 
     const { error } = await authClient.changePassword({
       currentPassword: values.currentPassword,
@@ -62,115 +81,168 @@ export function ChangePasswordForm() {
     });
 
     if (error) {
-      form.setError("root", {
-        message: error.message ?? "Failed to change password.",
+      changeForm.setError("root", {
+        message:
+          error.code === "INVALID_PASSWORD"
+            ? "Your current password is incorrect"
+            : "Couldn't update password. Try again.",
       });
       return;
     }
 
-    form.reset();
-    setNotice({ message: "Password changed successfully.", tone: "success" });
+    changeForm.reset();
+    setNotice({ message: "Password updated successfully.", tone: "success" });
   }
 
-  return (
-    <article className="rounded-[2rem] border border-line bg-surface p-6 shadow-[var(--shadow)]">
-      <div className="flex flex-col gap-3">
-        <p className="text-sm font-semibold uppercase tracking-[0.24em] text-accent-deep">
-          Security
-        </p>
-        <h2 className="text-2xl font-semibold tracking-tight text-ink">
-          Change password
-        </h2>
-        <p className="text-sm leading-7 sm:text-base">
-          Enter your current password and choose a new one.
-        </p>
-      </div>
+  // ── Set password form (no existing password) ────────────────────────────
+  const setForm = useForm<SetValues>({
+    resolver: zodResolver(setSchema),
+    defaultValues: { newPassword: "", confirmNewPassword: "" },
+    mode: "onSubmit",
+    reValidateMode: "onBlur",
+  });
 
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="mt-6 flex flex-col gap-6"
-      >
-        {errors.root?.message ? (
-          <p
-            role="alert"
-            className="rounded-[1.25rem] border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive"
-          >
-            {errors.root.message}
+  async function onSetPassword(values: SetValues) {
+    setNotice(null);
+    setForm.clearErrors("root");
+
+    const response = await apiClient.account["set-password"].$post({
+      json: { newPassword: values.newPassword },
+    });
+    const payload = await response.json().catch(() => null);
+
+    if (!response.ok) {
+      setForm.setError("root", {
+        message:
+          (payload &&
+          typeof payload === "object" &&
+          "message" in payload &&
+          typeof payload.message === "string"
+            ? payload.message
+            : null) ?? "Failed to set password. Try again.",
+      });
+      return;
+    }
+
+    setForm.reset();
+    setNotice({ message: "Password set successfully. You can now sign in with email and password.", tone: "success" });
+    setHasPassword(true);
+  }
+
+  // ── Loading ──────────────────────────────────────────────────────────────
+
+  if (hasPassword === null) {
+    return <div className="h-52 animate-pulse rounded-[1.25rem] bg-muted/40" />;
+  }
+
+  // ── Set password ─────────────────────────────────────────────────────────
+
+  if (!hasPassword) {
+    const { formState: { errors, isSubmitting } } = setForm;
+
+    return (
+      <div className="space-y-5">
+        <div className="rounded-[1.25rem] border border-border bg-muted/40 px-5 py-4 text-sm">
+          <p className="font-medium text-foreground">No password set up yet</p>
+          <p className="mt-1 text-muted-foreground">
+            Your account uses magic link sign-in and doesn't have a password.
+            Set one up to also sign in with email and password.
           </p>
-        ) : null}
-
-        {!errors.root?.message && notice ? (
-          <p
-            className={`rounded-[1.25rem] border px-4 py-3 text-sm ${
-              notice.tone === "success"
-                ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-700"
-                : "border-destructive/30 bg-destructive/10 text-destructive"
-            }`}
-          >
-            {notice.message}
-          </p>
-        ) : null}
-
-        <FieldGroup>
-          <Field data-invalid={!!errors.currentPassword || undefined}>
-            <FieldLabel htmlFor={currentPasswordId}>
-              Current Password
-            </FieldLabel>
-            <Input
-              id={currentPasswordId}
-              type="password"
-              placeholder="********"
-              {...form.register("currentPassword")}
-              aria-invalid={!!errors.currentPassword || undefined}
-            />
-            {errors.currentPassword ? (
-              <FieldDescription>
-                {errors.currentPassword.message}
-              </FieldDescription>
-            ) : null}
-          </Field>
-
-          <Field data-invalid={!!errors.newPassword || undefined}>
-            <FieldLabel htmlFor={newPasswordId}>New Password</FieldLabel>
-            <Input
-              id={newPasswordId}
-              type="password"
-              placeholder="********"
-              {...form.register("newPassword")}
-              aria-invalid={!!errors.newPassword || undefined}
-            />
-            {errors.newPassword ? (
-              <FieldDescription>{errors.newPassword.message}</FieldDescription>
-            ) : (
-              <FieldDescription>At least 8 characters.</FieldDescription>
-            )}
-          </Field>
-
-          <Field data-invalid={!!errors.confirmNewPassword || undefined}>
-            <FieldLabel htmlFor={confirmPasswordId}>
-              Confirm New Password
-            </FieldLabel>
-            <Input
-              id={confirmPasswordId}
-              type="password"
-              placeholder="********"
-              {...form.register("confirmNewPassword")}
-              aria-invalid={!!errors.confirmNewPassword || undefined}
-            />
-            {errors.confirmNewPassword ? (
-              <FieldDescription>
-                {errors.confirmNewPassword.message}
-              </FieldDescription>
-            ) : null}
-          </Field>
-        </FieldGroup>
-
-        <div>
-          <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? "Saving..." : "Change Password"}
-          </Button>
+          {!showSetForm && (
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="mt-4"
+              onClick={() => setShowSetForm(true)}
+            >
+              Set password
+            </Button>
+          )}
         </div>
-      </form>
-    </article>
+
+        {showSetForm && (
+          <form
+            onSubmit={setForm.handleSubmit(onSetPassword)}
+            className="space-y-5"
+            noValidate
+          >
+            <FieldErrorComponent errors={errors.root ? [errors.root] : []} />
+
+            {notice && !errors.root && (
+              <p className="rounded-[1.25rem] border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-700">
+                {notice.message}
+              </p>
+            )}
+
+            <PasswordField
+              label="New password"
+              placeholder="Enter new password"
+              registration={setForm.register("newPassword")}
+              error={errors.newPassword}
+              description="At least 8 characters"
+            />
+
+            <PasswordField
+              label="Confirm new password"
+              placeholder="Re-enter new password"
+              registration={setForm.register("confirmNewPassword")}
+              error={errors.confirmNewPassword}
+            />
+
+            <Button type="submit" disabled={isSubmitting}>
+              {isSubmitting ? "Setting password..." : "Set password"}
+            </Button>
+          </form>
+        )}
+      </div>
+    );
+  }
+
+  // ── Change password ──────────────────────────────────────────────────────
+
+  const { formState: { errors, isSubmitting } } = changeForm;
+
+  return (
+    <form
+      onSubmit={changeForm.handleSubmit(onChangePassword)}
+      className="space-y-5"
+      noValidate
+    >
+      <FieldErrorComponent errors={errors.root ? [errors.root] : []} />
+
+      {notice && !errors.root && (
+        <p className="rounded-[1.25rem] border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-700">
+          {notice.message}
+        </p>
+      )}
+
+      <PasswordField
+        label="Current password"
+        placeholder="Enter current password"
+        registration={changeForm.register("currentPassword")}
+        error={errors.currentPassword}
+        description="Needed to confirm it's really you"
+      />
+
+      <PasswordField
+        label="New password"
+        placeholder="Enter new password"
+        registration={changeForm.register("newPassword")}
+        error={errors.newPassword}
+        description="At least 8 characters"
+      />
+
+      <PasswordField
+        label="Confirm new password"
+        placeholder="Re-enter new password"
+        registration={changeForm.register("confirmNewPassword")}
+        error={errors.confirmNewPassword}
+      />
+
+      <Button type="submit" disabled={isSubmitting}>
+        {isSubmitting ? "Saving changes..." : "Change password"}
+      </Button>
+    </form>
   );
 }
